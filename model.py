@@ -37,6 +37,10 @@ STEERING_CORRECTION_LEFT_RIGHT = 0.25
 LEARNING_RATE = 0.001
 BATCH_SIZE = 64
 
+# input image size
+IMAGE_H_IN = 160
+IMAGE_W_IN = 320
+
 # output image size
 IMAGE_H_OUT	= 66
 IMAGE_W_OUT	= 66
@@ -185,7 +189,7 @@ def batch_gen(data_list, batch_size, train_gen=True):
 	Returns:
 		numpy.array of images and steering angle values of length batch_size
 	'''
-	im_size = (IMAGE_H_IN, IMAGE_W_IN, 3)
+	im_size = (IMAGE_H_OUT, IMAGE_W_OUT, 3)
 	
 	# create batch_size np arrays as placeholders for images and angles
 	X_train = np.empty((batch_size,) +  im_size, dtype = np.float64)
@@ -253,10 +257,10 @@ if __name__ == '__main__':
 
 	# left images
 	train_data_list_l, test_data_list_l = preprocess_data_log(base_path + DATA_LOG_PATH, DATA_LOG_NAME,
-														  col_name='left', steer_mod=STEERING_CORRECTION_LEFT_RIGHT)
+														  col_name='left', steer_aug=STEERING_CORRECTION_LEFT_RIGHT)
 	# right images
 	train_data_list_r, test_data_list_r = preprocess_data_log(base_path + DATA_LOG_PATH, DATA_LOG_NAME,
-														  col_name='right', steer_mod=-STEERING_CORRECTION_LEFT_RIGHT)
+														  col_name='right', steer_aug=-STEERING_CORRECTION_LEFT_RIGHT)
 
 
 	# combine data
@@ -269,7 +273,7 @@ if __name__ == '__main__':
 
 	# create a callback to save training weights after each epoch
 	checkpoint_path="nvidia-{epoch:02d}.h5"
-	checkpoint = ModelCheckpoint(checkpoint_path, verbose=0, save_best_only=False, save_weights_only=True, mode='auto')
+	checkpoint = ModelCheckpoint(checkpoint_path, verbose=1, save_best_only=False, save_weights_only=True, mode='auto')
 
 	# train the model
 	history = my_model.fit_generator(
