@@ -27,6 +27,50 @@ app = Flask(__name__)
 model = None
 prev_image_array = None
 
+
+state = -1
+perturb_mark = 0.
+perurb_steer = 0.
+
+
+def perturb(perturb_steering = 0.3, perturb_dur_s = 0.5, perturb_delay_s = 10.0):
+    '''
+    Generate a steerig perturbation of size perturb_steering and
+    duration perturb_dur_s. Wait perturb_delay_s between successive
+    perturbations
+    '''
+
+    global state
+    global perturb_mark
+    global perturb_steer
+
+    if state == -1: # not initialized
+        perturb_mark = time.time()
+        state = 0
+
+    elif state == 0: # perturbation 
+        if (time.time() - perturb_mark) > perturb_dur_s:
+            perturb_mark = time.time()
+            perturb_steer = 0
+            state = 1
+            
+    else:# dwelling
+        if (time.time() - perturb_mark) > perturb_delay_s:
+            perturb_mark = time.time()
+            perturb_steer = perturb_steering * np.random.choice([-1., 1.])
+            state = 0
+
+    if abs(perturb_steer) > 0:
+        if perturb_steer > 0:
+            print('>>>>>>>')
+        else:
+            print('<<<<<<<')
+    else:
+        print('')
+
+    return perturb_steer
+
+
 @sio.on('telemetry')
 def telemetry(sid, data):
     # The current steering angle of the car
@@ -38,35 +82,25 @@ def telemetry(sid, data):
     # The current image from the center camera of the car
     imgString = data["image"]
     image = Image.open(BytesIO(base64.b64decode(imgString)))
-    
     image_array = np.asarray(image)
 
-
     # crop
-    #image_array = image_array[40:(160-20),:,:]
     image_array = image_array[34:-20,:,:]
 
-
     # resize & normalize
-    #image_array = ((cv2.resize(image_array, (160,80))).astype(np.float32))/128. - 1.
-    #image_array = (cv2.resize(image_array, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA).astype(np.float32))/255. - 0.5
     image_array = (cv2.resize(image_array, (66,66), interpolation=cv2.INTER_LINEAR).astype(np.float64))/255. - 0.5
-    #np.save('float_img', image_array)
-    #import time
-    #time.sleep(1)
-    #import sys
-    #sys.exit()
     
     transformed_image_array = image_array[None, :, :, :]
-    
     
     # This model currently assumes that the features of the model are just the images. Feel free to change this.
     steering_angle = float(model.predict(transformed_image_array, batch_size=1))
     # The driving model currently just outputs a constant throttle. Feel free to edit this.
     throttle = 0.3
+    #p=perturb()
     #print(steering_angle, throttle)
-    #print('{:.1f}'.format(steering_angle*25.))
-    send_control(steering_angle, throttle)
+    print('{:.1f}'.format(steering_angle*25.))
+
+    send_control(steering_angle+p, throttle)
 
 
 @sio.on('connect')
