@@ -59,7 +59,7 @@ At first I attempted to drive the car around the track in training mode using a 
 The three camera views from a single frame of the simulation are shown in the figure below.
 
 
-![left-center-right] (images/left-center-right.png)
+![left-center-right](images/left-center-right.png "Left-Center-Right")
 
 
 The motivation for steering augmentation becomes clear by looking at the picture above: the side images appear similar to a center camera view in situations that would require steering correction. By adding a small positive or negative steering offset to the left and right view, the model can learn the corrective turning behaviour without having to manually generate it on the track. The images suggest that the left-center and right-center shift corresponds to perhaps a few degrees of turn. I started with a guess of 2.0 deg (0.08) and eventually increased it all the way to 6.25 deg (0.25).
@@ -95,7 +95,7 @@ The model was trained using Adam optimizer
 In order to speed up training and remove some of the unnecessary parts of the image, each image was cropped: 34 pixeles removed from the top to remove some of the sky and 14 from the bottom to cut out the car’s hood. The image was then resized to 66x66 pixels. The comparison between an unmodified source image and the image following post-processing are shown below.
 
 
-![left-center-right] (images/crop-scale.png)
+![left-center-right](images/crop-scale.png "Unmodified and Cropped and Scaled Image")
 
 
 Each image was then normalized by scaling the color values in each channel to the range of [-0.5, 0.5]. The drive.py script was modified to to include the same pro-processing step prior to feeing the image data to the trained model.
@@ -103,14 +103,14 @@ Each image was then normalized by scaling the color values in each channel to th
 
 ## Overfitting Strategy and Image Augmentation
 Reduced model complexity in terms of the  number of trainable parameters as well as introducing dropout stages into the fully connected layers coupled with generating more data from the left and right camera views are the key strategies to creating the model that does not overfit the data and can generalize well to the dataset it has not seen during training such as the second track. Two additional approaches which were suggested by Vivek Yadav
-in this [post] (https://chatbotslife.com/learning-human-driving-behavior-using-nvidias-neural-network-model-and-image-augmentation-80399360efee#.9rsa27jc1)
+in this [post](https://chatbotslife.com/learning-human-driving-behavior-using-nvidias-neural-network-model-and-image-augmentation-80399360efee#.9rsa27jc1)
 One was to randomly flip images during training with a corresponding adjustment of the steering angle to the opposite value, the other was to shift the images in X & Y directions by a random amount while compensating the steering angle for the side-to-side shift.
 
 
 The lateral shift of the image is somewhat similar to the left and right camera view relative to the center view and requires steering angle compensation. See image below.
 
 
-![unmodified - right shifted by 25 pixels] (images/image-shift.png)
+![unmodified - right shifted by 25 pixels](images/image-shift.png "Unmodified and Shifted by 25 px")
 
 
 I estimated that the left/right camera view shift corresponds to roughly 25 pixels. Using this information we can compute the steering augmentation amount that is consistent to that used for the left/right camera view images.
@@ -124,7 +124,7 @@ During initial exploration of the model architectures and parameter space it bec
 In order to explore the robustness of the model with respect to disturbances I implemented a random perturbation in `drive.py` that randomly steered the model off-course for a short duration letting the model recover and regain control before the next perturbation was initiated. It is remarkable that the model is capable of staying on the track with modest amount of perturbation (7.5 deg (0.3) for ½ s) and that it exhibits stable and smooth behaviour when regaining control following the disturbance event. A short video of a perturbation is shown below.
 
 
-![Right Perturbation in the Middle of Bridge] (images/perturb.gif)
+![Right Perturbation in the Middle of the Bridge](images/perturb.gif "Perturbation in the Midle of the Bridge")
 
 
 # Training
@@ -133,7 +133,7 @@ In order to explore the robustness of the model with respect to disturbances I i
 The results of a training session are shown below. The model with the best behaviour resulted from epoch 18.
 
 
-![Right Perturbation in the Middle of Bridge] (images/train-results.png)
+![Training Results](images/train-results.png "Training Results")
 
 
 ## Results
