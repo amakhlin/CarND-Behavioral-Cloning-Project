@@ -1,0 +1,12 @@
+if [[ -z $1 ]] ; then
+	echo "usage: ul_data data.zip ip_address"
+	exit 1
+fi
+echo "uploading data to" $2
+
+p=/home/carnd/CarND-Behavioral-Cloning-Project/
+
+
+scp $1 carnd@$2:$p
+
+

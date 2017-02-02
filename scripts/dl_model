@@ -1,0 +1,13 @@
+if [[ -z $1 ]] ; then
+	echo "usage: dl_model model_name ip_address"
+	exit 1
+fi
+echo "downloading weights from" $2
+
+p=/home/carnd/CarND-Behavioral-Cloning-Project/
+
+#echo scp carnd@$2:\"$p$1.json $p$1.h5\"
+
+scp carnd@$2:$p$1.* .
+#scp carnd@$2:/home/carnd/CarND-Behavioral-Cloning-Project/$1.h5 .
+
