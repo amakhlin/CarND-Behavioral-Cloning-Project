@@ -57,7 +57,7 @@ The resulting model has substantially fewer trainable parameters than the model 
 
 
 ### Data Generation
-At first I attempted to drive the car around the track in training mode using a mouse. However, I found it difficult to keep the car on the track let alone execute smooth recovery maneuvers that would be needed for good performance. Even using a joystick has proved somewhat difficult so decided to see how far along I can get by using the training set provided by Udacity. In order to obtain more turning recovery data I used the technique described in the Nvidia paper that synthesises additional training data from left and right camera images together with steering command augmentation. 
+At first I attempted to drive the car around the track in training mode using a mouse. However, I found it difficult to keep the car on the track let alone execute smooth recovery maneuvers that would be needed for good performance. Even using a joystick has proved somewhat difficult so decided to see how far along I can get by using the training set provided by Udacity. In order to obtain more turning recovery data I used the technique described in the Nvidia paper that synthesizes additional training data from left and right camera images together with steering command augmentation. 
 
 
 The three camera views from a single frame of the simulation are shown in the figure below.
@@ -74,7 +74,7 @@ In fact the amount of steering augmentation is an important training hyperparame
 
 
 ## Data
-Due to the large size of the dataset, mini-batches of data were produced just in time by a python generator and were fed into the learning algorithm via keras’s `fit_generator()` function. Only the data required by the current batch was loaded from the disk. This approach obviates the need to read all of the image data into memory at once which would have required roughly 3 Gb of RAM.
+Due to the large size of the dataset, mini-batches of data were produced just in time by a python generator and were fed into the learning algorithm via keras’ `fit_generator()` function. Only the data required by the current batch was loaded from the disk. This approach obviates the need to read all of the image data into memory at once which would have required roughly 3 Gb of RAM.
 
 
 
@@ -97,7 +97,7 @@ The model was trained using Adam optimizer
 
 
 ### Image Pre-Processing 
-In order to speed up training and remove some of the unnecessary parts of the image, each image was cropped: 34 pixeles removed from the top to remove some of the sky and 14 from the bottom to cut out the car’s hood. The image was then resized to 66x66 pixels. The comparison between an unmodified source image and the image following post-processing are shown below.
+In order to speed up training and remove some of the unnecessary parts of the image, each image was cropped: 34 pixels removed from the top to remove some of the sky and 14 from the bottom to cut out the car’s hood. The image was then resized to 66x66 pixels. The comparison between an unmodified source image and the image following post-processing are shown below.
 
 
 ![left-center-right](images/crop-scale.png)
@@ -127,17 +127,17 @@ I estimated that the left/right camera view shift corresponds to roughly 25 pixe
 During initial exploration of the model architectures and parameter space it became clear that model performance on the validation set was not a direct predictor of model’s success in the simulation. As a result, I opted to a 90/10% training/validation data split allocating a smaller portion of the data I’ve used in previous projects and what is typically recommended in order to use more of the available data for training. None of the data was allocated for a test set because the ultimate test was performing well on the the track in the simulation. In all, the model was trained on 21696 training examples and validated on 2412.
 
 ## Robustness Testing
-In order to explore the robustness of the model with respect to disturbances I implemented a random perturbation in `drive.py` that randomly steered the model off-course for a short duration letting the model recover and regain control before the next perturbation was initiated. It is remarkable that the model is capable of staying on the track with modest amount of perturbation (7.5 deg (0.3) for ½ s) and that it exhibits stable and smooth behaviour when regaining control following the disturbance event. A short video of a perturbation is shown below.
+In order to explore the robustness of the model with respect to disturbances I implemented a random perturbation in `drive.py` that randomly steered the model off-course for a short duration letting the model recover and regain control before the next perturbation was initiated. It is remarkable that the model is capable of staying on the track with modest amount of perturbation (7.5 deg (0.3) for ½ s) and that it exhibits stable and smooth behavior when regaining control following the disturbance event. A short video of a perturbation is shown below.
 
 
 ![Right Perturbation in the Middle of the Bridge](images/perturb.gif)
-*Perturbation in the Midle of the Bridge*
+*Perturbation in the Middle of the Bridge*
 
 
 ## Training
 
 
-The results of a training session are shown below. The model with the best behaviour resulted from epoch 18.
+The results of a training session are shown below. The model with the best behavior resulted from epoch 18.
 
 
 ~~~~
