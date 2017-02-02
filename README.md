@@ -117,7 +117,7 @@ The lateral shift of the image is somewhat similar to the left and right camera 
 
 
 ![unmodified - right shifted by 25 pixels](images/image-shift.png)
-*Unmodified and Shifted by 25 px
+*Unmodified and Shifted by 25 px*
 
 
 I estimated that the left/right camera view shift corresponds to roughly 25 pixels. Using this information we can compute the steering augmentation amount that is consistent to that used for the left/right camera view images.
@@ -131,7 +131,7 @@ In order to explore the robustness of the model with respect to disturbances I i
 
 
 ![Right Perturbation in the Middle of the Bridge](images/perturb.gif)
-* "Perturbation in the Midle of the Bridge*
+*Perturbation in the Midle of the Bridge*
 
 
 ## Training
